@@ -129,8 +129,14 @@ body {
   max-width: 100%;
   height: calc(100vh - 60px);
   overflow-y: scroll;
+  top: 0;
 }
 
+.venue-item{
+  padding: 5px;
+  margin-bottom: 5px;
+  border: 1px solid grey;
+}
 #sidebar-inner {
   padding: 10px;
 }
