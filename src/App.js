@@ -1,26 +1,59 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
+import { 
+  load_google_maps, 
+  load_places 
+} from './utils';
 import './App.css';
 
-function App() {
+class App extends Component {
+  componentDidMount(){
+    let googleMapsPromise = load_google_maps();
+    let placesPromise = load_places();
+
+    Promise.all([
+      googleMapsPromise,
+      placesPromise
+    ])
+    .then(values => {
+      let google = values[0];
+      let venues = values[1].response.venues;
+
+      this.google = google;
+      this.markers = [];
+      this.map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 9,
+        scrollwheel: true,
+        center: { lat: venues[0].location.lat, lng: venues[0].location.lng }
+      });
+
+      venues.forEach(venue => {
+        let marker = new google.maps.Marker({
+          position: { lat: venue.location.lat, lng: venue.location.lng },
+          map: this.map,
+          venue: venue,
+          id: venue.id,
+          name: venue.name,
+          animation: google.maps.Animation.DROP
+        });
+      })
+
+    })
+  }
+
+  render() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div id="map">
+
     </div>
   );
+ }
 }
 
 export default App;
+// this.google = google;
+//       this.infowindow = new google.maps.InfoWindow();
+//       this.map = new google.maps.Map(document.getElementById('map'), {
+//         zoom: 9,
+//         scrollwheel: true,
+//         center: { lat: venues[0].location.lat, lng: venues[0].location.lng }
+//       });
